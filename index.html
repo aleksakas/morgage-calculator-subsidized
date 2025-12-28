@@ -3,147 +3,422 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mortgage (2-phase) + Premature Payments (per-row)</title>
+  <title>Mortgage (2-phase) + Premature Payments</title>
   <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b0f14;color:#e6edf3;margin:0}
-    .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
-    .card{background:#111826;border:1px solid #223043;border-radius:14px;padding:14px}
-    h1{font-size:18px;margin:0 0 12px}
-    h2{font-size:13px;color:#9aa4b2;margin:14px 0 10px}
-    .row{display:grid;grid-template-columns:1fr 220px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(255,255,255,.10)}
-    .row:last-child{border-bottom:none}
-    label{font-size:13px}
-    .note{color:#9aa4b2;font-size:12px;line-height:1.4}
-    input{width:100%;box-sizing:border-box;background:#0f1724;color:#e6edf3;border:1px solid #24344c;border-radius:10px;padding:10px;font-size:13px;outline:none}
-    input:focus{border-color:#66e3ff;box-shadow:0 0 0 3px rgba(102,227,255,.12)}
-    button{background:#0f1724;color:#e6edf3;border:1px solid #24344c;border-radius:12px;padding:9px 11px;font-size:13px;cursor:pointer}
-    button:hover{border-color:#66e3ff}
-    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .grid{display:grid;grid-template-columns:1fr;gap:14px}
-    @media(min-width:980px){.grid{grid-template-columns:1fr 1fr}}
-    .kpi{border:1px solid #223043;border-radius:14px;padding:12px;background:linear-gradient(180deg,rgba(102,227,255,.08),rgba(102,227,255,0))}
-    .t{font-size:12px;color:#9aa4b2;margin-bottom:4px}
-    .v{font-size:18px;font-weight:700}
-    .s{font-size:12px;color:#9aa4b2;margin-top:4px}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px 12px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:middle}
-    th{text-align:left;color:#9aa4b2;font-weight:600;background:rgba(255,255,255,.03);white-space:nowrap}
-    tr:last-child td{border-bottom:none}
-    .right{text-align:right}
-    .small{font-size:12px;color:#9aa4b2}
-    .pill{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid #24344c;background:#0f1724;color:#cfe8ff;font-size:12px}
+    :root{
+      --bg:#0b0f14;
+      --card:#111826;
+      --border:#223043;
+      --muted:#9aa4b2;
+      --ink:#e6edf3;
+      --field:#0f1724;
+      --fieldBorder:#24344c;
+      --accent:#66e3ff;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      overflow:hidden; /* ✅ whole page not scrollable */
+    }
+
+    .wrap{
+      height:100vh;
+      max-width:1200px;
+      margin:0 auto;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:0;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      background:var(--card);
+      border-radius:14px;
+      flex:0 0 auto;
+    }
+    .title{
+      font-weight:700;
+      font-size:14px;
+      line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .badge{
+      font-size:12px;
+      color:var(--muted);
+      border:1px solid var(--border);
+      padding:3px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.03);
+      white-space:nowrap;
+    }
+
+    .grid{
+      flex:1;
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:10px;
+      min-height:0;
+    }
+
+    /* For small screens, allow normal scroll (otherwise it's impossible) */
+    @media(max-width:980px){
+      body{overflow:auto;}
+      .wrap{height:auto; min-height:100vh;}
+      .grid{grid-template-columns:1fr;}
+      .title{white-space:normal}
+    }
+
+    .panel{
+      border:1px solid var(--border);
+      background:var(--card);
+      border-radius:14px;
+      padding:12px;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      overflow:hidden;
+    }
+
+    .sectionHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding-bottom:8px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      margin-bottom:6px;
+      flex:0 0 auto;
+    }
+    .sectionHead h2{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+    }
+
+    .formGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:8px;
+      flex:0 0 auto;
+    }
+    .field{
+      border:1px solid var(--fieldBorder);
+      background:var(--field);
+      border-radius:12px;
+      padding:8px 10px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+    }
+    .field label{
+      font-size:11px;
+      color:var(--muted);
+    }
+    .field input{
+      width:100%;
+      border:none;
+      outline:none;
+      background:transparent;
+      color:var(--ink);
+      font-size:13px;
+      padding:0;
+      min-width:0;
+    }
+    .field:focus-within{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(102,227,255,.12);
+    }
+
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      flex:0 0 auto;
+    }
+    button{
+      border:1px solid var(--fieldBorder);
+      background:var(--field);
+      color:var(--ink);
+      border-radius:12px;
+      padding:8px 10px;
+      font-size:12px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    button:hover{border-color:var(--accent)}
+    button.primary{border-color:rgba(102,227,255,.5)}
+    button:disabled{opacity:.5; cursor:not-allowed}
+
+    .hint{
+      font-size:11px;
+      color:var(--muted);
+      line-height:1.35;
+      flex:0 0 auto;
+    }
     .warn{color:#ffd36a}
+
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:8px;
+      flex:0 0 auto;
+    }
+    @media(max-width:980px){
+      .kpis{grid-template-columns:1fr}
+    }
+    .kpi{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px;
+      background:linear-gradient(180deg,rgba(102,227,255,.08),rgba(102,227,255,0));
+      min-width:0;
+    }
+    .kpi .t{font-size:11px;color:var(--muted);margin-bottom:4px}
+    .kpi .v{font-size:16px;font-weight:800}
+    .kpi .s{font-size:11px;color:var(--muted);margin-top:4px}
+
+    .tableWrap{
+      border:1px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      background:rgba(255,255,255,.02);
+      flex:0 0 auto;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+      table-layout:fixed;
+    }
+    thead th{
+      text-align:left;
+      color:var(--muted);
+      font-weight:700;
+      background:rgba(255,255,255,.03);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      padding:8px 10px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    tbody td{
+      padding:8px 10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      vertical-align:middle;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    tbody tr:last-child td{border-bottom:none}
+    .right{text-align:right}
+    .mono{font-variant-numeric:tabular-nums}
+
+    .chip{
+      font-size:11px;
+      color:var(--muted);
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:2px 10px;
+      background:rgba(255,255,255,.03);
+      white-space:nowrap;
+    }
+
+    .addRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap:8px;
+      align-items:stretch;
+      flex:0 0 auto;
+    }
+    @media(max-width:980px){
+      .addRow{grid-template-columns:1fr 1fr}
+      .addRow button{grid-column:1 / -1}
+    }
+
+    .grow{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      overflow:hidden;
+    }
+
+    /* ✅ Scroll ONLY inside the premature payments list */
+    .ppScroll{
+      height:220px;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .ppScroll::-webkit-scrollbar{ width:10px; }
+    .ppScroll::-webkit-scrollbar-thumb{ background:var(--border); border-radius:999px; }
+    .ppScroll::-webkit-scrollbar-track{ background:transparent; }
+
+    /* Keep impact table fixed; still no page scrolling.
+       If you want impact scroll too, tell me and I’ll do it similarly. */
+    .impFixed{ height:340px; overflow:hidden; }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="card">
-    <h1>Mortgage calculator (2-phase) + Premature payments (per-row cumulative)</h1>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">Mortgage (2-phase) + Premature Payments</div>
+      <div class="badge">Page locked • list scrolls only</div>
+    </div>
 
     <div class="grid">
-      <div>
-        <h2>Inputs</h2>
-        <div class="row">
-          <div>
+      <!-- LEFT -->
+      <div class="panel">
+        <div class="sectionHead">
+          <h2>Inputs</h2>
+          <span class="chip" id="ratesChip">—</span>
+        </div>
+
+        <div class="formGrid">
+          <div class="field">
             <label>Property price (EUR)</label>
-            <div class="note">Example: 100000</div>
+            <input id="price" type="number" step="0.01" value="100000">
           </div>
-          <input id="price" type="number" step="0.01" value="100000">
-        </div>
-        <div class="row">
-          <div>
+          <div class="field">
             <label>Deposit (EUR)</label>
-            <div class="note">Example: 1000</div>
+            <input id="deposit" type="number" step="0.01" value="1000">
           </div>
-          <input id="deposit" type="number" step="0.01" value="1000">
-        </div>
-        <div class="row">
-          <div>
+          <div class="field">
             <label>Years</label>
-            <div class="note">Example: 40</div>
+            <input id="years" type="number" step="1" value="40">
           </div>
-          <input id="years" type="number" step="1" value="40">
+          <div class="field">
+            <label>Loan amount (auto)</label>
+            <input id="loanAuto" type="text" readonly value="—">
+          </div>
         </div>
 
-        <h2>Premature payments</h2>
-
-        <div class="btnRow">
-          <button id="addRowBtn">+ Add premature payment</button>
-          <button id="clearBtn">Clear list</button>
-          <button id="calcBtn">Calculate</button>
+        <div class="actions">
+          <button class="primary" id="calcBtn">Recalculate</button>
+          <button id="resetBtn">Reset</button>
         </div>
 
-        <div style="margin-top:10px; overflow:auto; border:1px solid #223043; border-radius:14px;">
-          <table>
-            <thead>
-              <tr>
-                <th style="width:160px">Month</th>
-                <th>Amount (EUR)</th>
-                <th class="right" style="width:120px">Remove</th>
-              </tr>
-            </thead>
-            <tbody id="prepayBody"></tbody>
-          </table>
+        <div class="sectionHead" style="margin-top:6px">
+          <h2>Premature payments</h2>
+          <span class="chip" id="ppCount">0 items</span>
         </div>
 
-        <div class="note warn" id="validationOut" style="margin-top:10px;"></div>
+        <div class="addRow">
+          <div class="field">
+            <label>Month</label>
+            <input id="newMonth" type="number" step="1" min="1" placeholder="e.g. 12">
+          </div>
+          <div class="field">
+            <label>Amount (EUR)</label>
+            <input id="newAmount" type="number" step="0.01" min="0" placeholder="e.g. 1000">
+          </div>
+          <button id="addBtn">+ Add</button>
+        </div>
+
+        <div class="hint warn" id="validationOut"></div>
+
+        <div class="grow">
+          <div class="tableWrap ppScroll">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:42px">#</th>
+                  <th style="width:90px">Month</th>
+                  <th class="right">Amount</th>
+                  <th class="right" style="width:90px">Action</th>
+                </tr>
+              </thead>
+              <tbody id="ppBody"></tbody>
+            </table>
+          </div>
+
+          <div class="hint">
+            This list scrolls. The rest of the page stays locked (no scrolling).
+          </div>
+        </div>
       </div>
 
-      <div>
-        <h2>Baseline results (no prepayments)</h2>
-
-        <div class="kpi">
-          <div class="t">Loan amount</div>
-          <div class="v" id="loanOut">—</div>
-          <div class="s" id="loanSub">—</div>
+      <!-- RIGHT -->
+      <div class="panel">
+        <div class="sectionHead">
+          <h2>Baseline (no premature payments)</h2>
+          <span class="chip" id="termChip">—</span>
         </div>
 
-        <div style="height:10px"></div>
-
-        <div class="kpi">
-          <div class="t">Monthly payment (first 6 years)</div>
-          <div class="v" id="p1Out">—</div>
-          <div class="s" id="p1Sub">—</div>
+        <div class="kpis">
+          <div class="kpi">
+            <div class="t">Monthly payment (first 6 years)</div>
+            <div class="v mono" id="p1Out">—</div>
+            <div class="s mono" id="p1Sub">—</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Monthly payment (after 6 years)</div>
+            <div class="v mono" id="p2Out">—</div>
+            <div class="s mono" id="p2Sub">—</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Impact</div>
+            <div class="v mono" id="deltaOut">—</div>
+            <div class="s">See table below</div>
+          </div>
         </div>
 
-        <div style="height:10px"></div>
-
-        <div class="kpi">
-          <div class="t">Monthly payment (after 6 years)</div>
-          <div class="v" id="p2Out">—</div>
-          <div class="s" id="p2Sub">—</div>
+        <div class="sectionHead" style="margin-top:4px">
+          <h2>Impact (cumulative per row)</h2>
+          <span class="chip" id="impactChip">—</span>
         </div>
 
-        <h2>Impact table (cumulative per row)</h2>
+        <div class="grow">
+          <div class="tableWrap impFixed">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:42px">#</th>
+                  <th style="width:80px">Month</th>
+                  <th class="right">Extra</th>
+                  <th class="right">Bal. before</th>
+                  <th class="right">Bal. after</th>
+                  <th class="right">New payment</th>
+                  <th class="right">After 6y</th>
+                </tr>
+              </thead>
+              <tbody id="impactBody"></tbody>
+            </table>
+          </div>
 
-        <div style="margin-top:10px; overflow:auto; border:1px solid #223043; border-radius:14px;">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Month</th>
-                <th class="right">Extra payment</th>
-                <th class="right">Balance before</th>
-                <th class="right">Balance after</th>
-                <th class="right">New payment after this row</th>
-                <th class="right">Payment after 6 years</th>
-              </tr>
-            </thead>
-            <tbody id="impactBody"></tbody>
-          </table>
+          <div class="hint">
+            Impact table is fixed-height (no page scroll). If you want this table scrollable too, say so.
+          </div>
         </div>
-
       </div>
     </div>
   </div>
-</div>
 
 <script>
 (() => {
-  // Defaults
-  const FIXED_ANNUAL_RATE = 0.015;   // 1.50%
-  const VAR_ANNUAL_RATE   = 0.0394;  // example
-  const FIXED_MONTHS      = 72;      // 6 years
+  const FIXED_ANNUAL_RATE = 0.015;
+  const VAR_ANNUAL_RATE   = 0.0394;
+  const FIXED_MONTHS      = 72;
 
   const $ = (id) => document.getElementById(id);
 
@@ -153,9 +428,7 @@
     if(!isFinite(x)) return "—";
     return x.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2}) + " EUR";
   }
-
   function powInt(a,n){ let r=1; for(let i=0;i<n;i++) r*=a; return r; }
-
   function annuityPayment(principal, annualRate, months){
     if(months <= 0) return 0;
     const r = annualRate / 12;
@@ -164,42 +437,19 @@
     return principal * (r * p) / (p - 1);
   }
 
-  function renderPrepayTable(){
-    const body = $("prepayBody");
-    body.innerHTML = "";
-    if(prepayments.length === 0){
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="3" class="small">No premature payments added.</td>`;
-      body.appendChild(tr);
-      return;
-    }
-    prepayments.forEach((pp, idx) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><input data-idx="${idx}" data-field="month" type="number" step="1" min="1" value="${pp.month ?? ""}"></td>
-        <td><input data-idx="${idx}" data-field="amount" type="number" step="0.01" min="0" value="${pp.amount ?? ""}"></td>
-        <td class="right"><button data-remove="${idx}">Remove</button></td>
-      `;
-      body.appendChild(tr);
-    });
+  function computeLoan(){
+    const price = +$("price").value || 0;
+    const deposit = +$("deposit").value || 0;
+    const years = Math.max(1, Math.floor(+$("years").value || 0));
+    const termMonths = years * 12;
 
-    body.querySelectorAll("input").forEach(inp => {
-      inp.addEventListener("input", (e) => {
-        const idx = +e.target.dataset.idx;
-        const field = e.target.dataset.field;
-        const val = +e.target.value;
-        if(field === "month") prepayments[idx].month = Math.max(1, Math.floor(val || 0));
-        if(field === "amount") prepayments[idx].amount = Math.max(0, val || 0);
-      });
-    });
+    const dep = Math.min(Math.max(deposit, 0), Math.max(price, 0));
+    const loan = Math.max(0, price - dep);
 
-    body.querySelectorAll("button[data-remove]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        const idx = +e.target.dataset.remove;
-        prepayments.splice(idx, 1);
-        renderPrepayTable();
-      });
-    });
+    $("loanAuto").value = fmtEur(loan);
+    $("termChip").textContent = `${years} years (${termMonths} months)`;
+
+    return { loan, termMonths, years };
   }
 
   function cleanedSortedPrepayments(termMonths){
@@ -213,49 +463,39 @@
         validation.push(`Payment month ${p.month} is beyond term (${termMonths}) and will be ignored.`);
       }
     }
+
     const within = cleaned.filter(p => p.month <= termMonths);
-    within.sort((a,b) => a.month - b.month);
+    within.forEach((p, i) => p._i = i);
+    within.sort((a,b) => (a.month - b.month) || (a._i - b._i));
+    within.forEach(p => delete p._i);
+
     return { within, validation };
   }
 
-  // Run a full simulation but only applying the first K prepayments (cumulative).
-  // Returns: impact row data for the Kth payment:
-  // - newPayment after that Kth payment
-  // - paymentAfter6Years computed from balance at month 72
   function simulateUpToK({loan, termMonths, prepayList, k}){
     const fixedMonths = Math.min(FIXED_MONTHS, termMonths);
-
-    // schedule map for first k prepayments (if multiple in same month within first k, sum them)
-    const map = new Map();
-    for(let i=0;i<k;i++){
-      const p = prepayList[i];
-      map.set(p.month, (map.get(p.month) || 0) + p.amount);
-    }
+    const events = prepayList.slice(0, k);
 
     let bal = loan;
-
-    // start payment in fixed phase amortized over full term
     let payment = annuityPayment(bal, FIXED_ANNUAL_RATE, termMonths);
 
-    // track payment after 6 years (month 73) for this K scenario
     let paymentAfter6 = null;
 
-    // track details for the specific Kth payment
-    const targetMonth = prepayList[k-1].month;
+    const target = events[events.length - 1];
     let rowBefore = null, rowAfter = null, rowNewPayment = null;
+
+    let eventIndex = 0;
 
     for(let m=1; m<=termMonths; m++){
       const inFixed = (m <= fixedMonths);
       const ar = inFixed ? FIXED_ANNUAL_RATE : VAR_ANNUAL_RATE;
 
-      // switch to variable at month 73
       if(m === fixedMonths + 1){
         const remaining = termMonths - (m - 1);
         payment = remaining > 0 ? annuityPayment(bal, VAR_ANNUAL_RATE, remaining) : 0;
         paymentAfter6 = payment;
       }
 
-      // regular installment
       const r = ar / 12;
       const interest = bal * r;
       let principal = payment - interest;
@@ -263,64 +503,38 @@
       if(principal > bal) principal = bal;
       bal -= principal;
 
-      // prepayment after installment (only first k prepayments are scheduled in map)
-      const extra = map.get(m) || 0;
-      if(extra > 0 && bal > 0){
+      while(eventIndex < events.length && events[eventIndex].month === m && bal > 0){
+        const amount = events[eventIndex].amount;
+
         const beforeExtra = bal;
-        const applied = Math.min(extra, bal);
+        const applied = Math.min(amount, bal);
         bal -= applied;
 
         const remainingMonths = termMonths - m;
         const newPayment = remainingMonths > 0 ? annuityPayment(bal, ar, remainingMonths) : 0;
 
-        // If this month is where the Kth prepayment happens, capture row details
-        if(m === targetMonth){
+        if(events[eventIndex] === target){
           rowBefore = beforeExtra;
           rowAfter = bal;
           rowNewPayment = newPayment;
         }
 
         payment = newPayment;
+        eventIndex++;
       }
 
       if(bal <= 0) break;
     }
 
-    // If loan ends before month 73, paymentAfter6 is effectively 0
     if(termMonths > fixedMonths && paymentAfter6 === null){
-      // Not reached month 73 because loan finished early
       paymentAfter6 = 0;
     }
 
     return { rowBefore, rowAfter, rowNewPayment, paymentAfter6 };
   }
 
-  function calculate(){
-    $("validationOut").textContent = "";
-    $("impactBody").innerHTML = "";
-
-    const price = +$("price").value || 0;
-    const deposit = +$("deposit").value || 0;
-    const years = Math.max(1, Math.floor(+$("years").value || 0));
-    const termMonths = years * 12;
-
-    const dep = Math.min(Math.max(deposit, 0), Math.max(price, 0));
-    const loan = Math.max(0, price - dep);
-
-    $("loanOut").textContent = fmtEur(loan);
-    $("loanSub").textContent = `Term: ${years} years (${termMonths} months)`;
-
-    if(loan <= 0){
-      $("p1Out").textContent = "—";
-      $("p2Out").textContent = "—";
-      $("p1Sub").textContent = "Loan amount is 0.";
-      $("p2Sub").textContent = "";
-      return;
-    }
-
+  function calcBaseline({loan, termMonths}){
     const fixedMonths = Math.min(FIXED_MONTHS, termMonths);
-
-    // Baseline
     const baseP1 = annuityPayment(loan, FIXED_ANNUAL_RATE, termMonths);
 
     let balAfterFixed = loan;
@@ -331,70 +545,173 @@
       if(principal > balAfterFixed) principal = balAfterFixed;
       balAfterFixed -= principal;
     }
+
     const baselineRem = termMonths - fixedMonths;
     const baseP2 = baselineRem > 0 ? annuityPayment(balAfterFixed, VAR_ANNUAL_RATE, baselineRem) : 0;
 
     $("p1Out").textContent = fmtEur(baseP1);
-    $("p1Sub").textContent = `Rate: ${(FIXED_ANNUAL_RATE*100).toFixed(2)}% · First ${fixedMonths} months`;
-
+    $("p1Sub").textContent = `Rate ${(FIXED_ANNUAL_RATE*100).toFixed(2)}% · First ${fixedMonths} months`;
     $("p2Out").textContent = baselineRem > 0 ? fmtEur(baseP2) : "—";
     $("p2Sub").textContent = baselineRem > 0
-      ? `Rate: ${(VAR_ANNUAL_RATE*100).toFixed(2)}% · Remaining ${baselineRem} months`
-      : "No variable phase.";
+      ? `Rate ${(VAR_ANNUAL_RATE*100).toFixed(2)}% · Remaining ${baselineRem} months`
+      : "No variable phase";
+  }
 
-    // Prepayments list
-    const { within, validation } = cleanedSortedPrepayments(termMonths);
-    if(validation.length){
-      $("validationOut").innerHTML = validation.map(x => "• " + x).join("<br>");
-    }
+  function renderPrepayList(list){
+    $("ppCount").textContent = `${list.length} items`;
 
-    const impactBody = $("impactBody");
-    impactBody.innerHTML = "";
+    const body = $("ppBody");
+    body.innerHTML = "";
 
-    if(within.length === 0){
+    if(list.length === 0){
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="7" class="small">Add premature payments to see per-row recalculated results.</td>`;
-      impactBody.appendChild(tr);
+      tr.innerHTML = `<td colspan="4" class="mono" style="color:var(--muted)">No premature payments yet.</td>`;
+      body.appendChild(tr);
       return;
     }
 
-    // For each row i, simulate applying first i payments (cumulative) and show results for that row
-    within.forEach((p, i) => {
-      const k = i + 1;
-      const sim = simulateUpToK({ loan, termMonths, prepayList: within, k });
-
+    list.forEach((p, idx) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${k}</td>
-        <td>${p.month}</td>
-        <td class="right">${fmtEur(p.amount)}</td>
-        <td class="right">${fmtEur(sim.rowBefore)}</td>
-        <td class="right">${fmtEur(sim.rowAfter)}</td>
-        <td class="right"><b>${fmtEur(sim.rowNewPayment)}</b></td>
-        <td class="right"><b>${fmtEur(sim.paymentAfter6)}</b></td>
+        <td class="mono">${idx + 1}</td>
+        <td class="mono">${p.month}</td>
+        <td class="right mono">${fmtEur(p.amount)}</td>
+        <td class="right"><button data-remove="${idx}">Remove</button></td>
       `;
-      impactBody.appendChild(tr);
+      body.appendChild(tr);
+    });
+
+    body.querySelectorAll("button[data-remove]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const idx = +e.target.dataset.remove;
+        // remove from original prepayments by matching idx in cleaned list: easiest is rebuild prepayments from cleaned list after removal
+        // We'll remove by value+position by reconstructing:
+        const { termMonths } = computeLoan();
+        const { within } = cleanedSortedPrepayments(termMonths);
+        within.splice(idx, 1);
+        prepayments = within.map(x => ({ month: x.month, amount: x.amount }));
+        recalcAll();
+      });
     });
   }
 
-  // UI events
-  $("addRowBtn").addEventListener("click", () => {
-    prepayments.push({ month: 12, amount: 1000 });
-    renderPrepayTable();
-  });
+  function renderImpact(rows){
+    $("impactChip").textContent = `${rows.length} rows`;
 
-  $("clearBtn").addEventListener("click", () => {
+    const body = $("impactBody");
+    body.innerHTML = "";
+
+    if(rows.length === 0){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="7" class="mono" style="color:var(--muted)">Add premature payments to see impact.</td>`;
+      body.appendChild(tr);
+      return;
+    }
+
+    rows.slice(0, 6).forEach(r => { // keep visible without scroll; increase if you want
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="mono">${r.k}</td>
+        <td class="mono">${r.month}</td>
+        <td class="right mono">${fmtEur(r.amount)}</td>
+        <td class="right mono">${fmtEur(r.before)}</td>
+        <td class="right mono">${fmtEur(r.after)}</td>
+        <td class="right mono"><b>${fmtEur(r.newPay)}</b></td>
+        <td class="right mono"><b>${fmtEur(r.after6)}</b></td>
+      `;
+      body.appendChild(tr);
+    });
+
+    $("deltaOut").textContent = rows.length ? "Per-row recalculated" : "—";
+  }
+
+  function recalcAll(){
+    $("validationOut").textContent = "";
+
+    const { loan, termMonths } = computeLoan();
+
+    if(loan <= 0){
+      $("p1Out").textContent = "—";
+      $("p1Sub").textContent = "Loan amount is 0.";
+      $("p2Out").textContent = "—";
+      $("p2Sub").textContent = "";
+      renderPrepayList([]);
+      renderImpact([]);
+      $("deltaOut").textContent = "—";
+      return;
+    }
+
+    calcBaseline({loan, termMonths});
+
+    const { within, validation } = cleanedSortedPrepayments(termMonths);
+    if(validation.length){
+      $("validationOut").textContent = validation.join(" ");
+    }
+
+    renderPrepayList(within);
+
+    const rows = within.map((p, i) => {
+      const k = i + 1;
+      const sim = simulateUpToK({ loan, termMonths, prepayList: within, k });
+      return {
+        k,
+        month: p.month,
+        amount: p.amount,
+        before: sim.rowBefore,
+        after: sim.rowAfter,
+        newPay: sim.rowNewPayment,
+        after6: sim.paymentAfter6
+      };
+    });
+
+    renderImpact(rows);
+  }
+
+  $("calcBtn").addEventListener("click", recalcAll);
+
+  $("resetBtn").addEventListener("click", () => {
+    $("price").value = 100000;
+    $("deposit").value = 1000;
+    $("years").value = 40;
+    $("newMonth").value = "";
+    $("newAmount").value = "";
     prepayments = [];
-    renderPrepayTable();
-    calculate();
+    recalcAll();
   });
 
-  $("calcBtn").addEventListener("click", calculate);
-  ["price","deposit","years"].forEach(id => $(id).addEventListener("input", calculate));
+  $("addBtn").addEventListener("click", () => {
+    const { termMonths } = computeLoan();
+    const month = Math.max(1, Math.floor(+$("newMonth").value || 0));
+    const amount = Math.max(0, +$("newAmount").value || 0);
 
-  // init
-  renderPrepayTable();
-  calculate();
+    if(!month || amount <= 0){
+      $("validationOut").textContent = "Enter a valid month and amount.";
+      return;
+    }
+    if(month > termMonths){
+      $("validationOut").textContent = `Month ${month} is beyond the loan term (${termMonths}).`;
+      return;
+    }
+
+    prepayments.push({ month, amount });
+    $("newMonth").value = "";
+    $("newAmount").value = "";
+
+    // scroll the small list to bottom so the newly added row is visible
+    setTimeout(() => {
+      const el = document.querySelector(".ppScroll");
+      if(el) el.scrollTop = el.scrollHeight;
+    }, 0);
+
+    recalcAll();
+  });
+
+  ["price","deposit","years"].forEach(id => $(id).addEventListener("input", recalcAll));
+
+  $("ratesChip").textContent =
+    `Fixed ${(FIXED_ANNUAL_RATE*100).toFixed(2)}% (${FIXED_MONTHS}m) → Variable ${(VAR_ANNUAL_RATE*100).toFixed(2)}%`;
+
+  recalcAll();
 })();
 </script>
 </body>
