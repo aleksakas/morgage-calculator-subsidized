@@ -1,614 +1,401 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Mortgage (2-phase) + Premature Payments</title>
-    <style>
-        body {
-            font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;
-            background: #0b0f14;
-            color: #e6edf3;
-            margin: 0
-        }
-
-        .wrap {
-            max-width: 1100px;
-            margin: 24px auto;
-            padding: 0 16px
-        }
-
-        .card {
-            background: #111826;
-            border: 1px solid #223043;
-            border-radius: 14px;
-            padding: 14px
-        }
-
-        h1 {
-            font-size: 18px;
-            margin: 0 0 12px
-        }
-
-        h2 {
-            font-size: 13px;
-            color: #9aa4b2;
-            margin: 14px 0 10px
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 220px;
-            gap: 10px;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px dashed rgba(255, 255, 255, .10)
-        }
-
-        .row:last-child {
-            border-bottom: none
-        }
-
-        label {
-            font-size: 13px
-        }
-
-        .note {
-            color: #9aa4b2;
-            font-size: 12px;
-            line-height: 1.4
-        }
-
-        input {
-            width: 100%;
-            box-sizing: border-box;
-            background: #0f1724;
-            color: #e6edf3;
-            border: 1px solid #24344c;
-            border-radius: 10px;
-            padding: 10px;
-            font-size: 13px;
-            outline: none
-        }
-
-        input:focus {
-            border-color: #66e3ff;
-            box-shadow: 0 0 0 3px rgba(102, 227, 255, .12)
-        }
-
-        button {
-            background: #0f1724;
-            color: #e6edf3;
-            border: 1px solid #24344c;
-            border-radius: 12px;
-            padding: 9px 11px;
-            font-size: 13px;
-            cursor: pointer
-        }
-
-        button:hover {
-            border-color: #66e3ff
-        }
-
-        .btnRow {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 10px
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px
-        }
-
-        @media(min-width:980px) {
-            .grid {
-                grid-template-columns: 1fr 1fr
-            }
-        }
-
-        .kpi {
-            border: 1px solid #223043;
-            border-radius: 14px;
-            padding: 12px;
-            background: linear-gradient(180deg, rgba(102, 227, 255, .08), rgba(102, 227, 255, 0))
-        }
-
-        .t {
-            font-size: 12px;
-            color: #9aa4b2;
-            margin-bottom: 4px
-        }
-
-        .v {
-            font-size: 18px;
-            font-weight: 700
-        }
-
-        .s {
-            font-size: 12px;
-            color: #9aa4b2;
-            margin-top: 4px
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse
-        }
-
-        th,
-        td {
-            padding: 10px 12px;
-            font-size: 13px;
-            border-bottom: 1px solid rgba(255, 255, 255, .08);
-            vertical-align: middle
-        }
-
-        th {
-            text-align: left;
-            color: #9aa4b2;
-            font-weight: 600;
-            background: rgba(255, 255, 255, .03);
-            white-space: nowrap
-        }
-
-        tr:last-child td {
-            border-bottom: none
-        }
-
-        .right {
-            text-align: right
-        }
-
-        .small {
-            font-size: 12px;
-            color: #9aa4b2
-        }
-
-        .pill {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 999px;
-            border: 1px solid #24344c;
-            background: #0f1724;
-            color: #cfe8ff;
-            font-size: 12px
-        }
-
-        .warn {
-            color: #ffd36a
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mortgage (2-phase) + Premature Payments (per-row)</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b0f14;color:#e6edf3;margin:0}
+    .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+    .card{background:#111826;border:1px solid #223043;border-radius:14px;padding:14px}
+    h1{font-size:18px;margin:0 0 12px}
+    h2{font-size:13px;color:#9aa4b2;margin:14px 0 10px}
+    .row{display:grid;grid-template-columns:1fr 220px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(255,255,255,.10)}
+    .row:last-child{border-bottom:none}
+    label{font-size:13px}
+    .note{color:#9aa4b2;font-size:12px;line-height:1.4}
+    input{width:100%;box-sizing:border-box;background:#0f1724;color:#e6edf3;border:1px solid #24344c;border-radius:10px;padding:10px;font-size:13px;outline:none}
+    input:focus{border-color:#66e3ff;box-shadow:0 0 0 3px rgba(102,227,255,.12)}
+    button{background:#0f1724;color:#e6edf3;border:1px solid #24344c;border-radius:12px;padding:9px 11px;font-size:13px;cursor:pointer}
+    button:hover{border-color:#66e3ff}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:980px){.grid{grid-template-columns:1fr 1fr}}
+    .kpi{border:1px solid #223043;border-radius:14px;padding:12px;background:linear-gradient(180deg,rgba(102,227,255,.08),rgba(102,227,255,0))}
+    .t{font-size:12px;color:#9aa4b2;margin-bottom:4px}
+    .v{font-size:18px;font-weight:700}
+    .s{font-size:12px;color:#9aa4b2;margin-top:4px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px 12px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:middle}
+    th{text-align:left;color:#9aa4b2;font-weight:600;background:rgba(255,255,255,.03);white-space:nowrap}
+    tr:last-child td{border-bottom:none}
+    .right{text-align:right}
+    .small{font-size:12px;color:#9aa4b2}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid #24344c;background:#0f1724;color:#cfe8ff;font-size:12px}
+    .warn{color:#ffd36a}
+  </style>
 </head>
-
 <body>
-    <div class="wrap">
-        <div class="card">
-            <h1>Mortgage calculator (First 6 years + After 6 years) + Premature payments</h1>
+<div class="wrap">
+  <div class="card">
+    <h1>Mortgage calculator (2-phase) + Premature payments (per-row cumulative)</h1>
 
-            <div class="grid">
-                <div>
-                    <h2>Inputs</h2>
-                    <div class="row">
-                        <div>
-                            <label>Property price (EUR)</label>
-                            <div class="note">Example: 80000</div>
-                        </div>
-                        <input id="price" type="number" step="0.01" value="80000">
-                    </div>
-                    <div class="row">
-                        <div>
-                            <label>Deposit (EUR)</label>
-                            <div class="note">Example: 800</div>
-                        </div>
-                        <input id="deposit" type="number" step="0.01" value="800">
-                    </div>
-                    <div class="row">
-                        <div>
-                            <label>Years</label>
-                            <div class="note">Example: 40</div>
-                        </div>
-                        <input id="years" type="number" step="1" value="40">
-                    </div>
-
-                    <div class="note">
-                        <span class="pill">Assumption</span>
-                        Prepayment at month <b>M</b> is applied <b>after</b> the regular installment of month M,
-                        then we recalculate the payment for the remaining months (term stays the same).
-                    </div>
-
-                    <h2>Premature payments</h2>
-                    <div class="note">Add extra payments (month number starting from 1) and amount in EUR.</div>
-
-                    <div class="btnRow">
-                        <button id="addRowBtn">+ Add premature payment</button>
-                        <button id="clearBtn">Clear list</button>
-                        <button id="calcBtn">Calculate</button>
-                    </div>
-
-                    <div style="margin-top:10px; overflow:auto; border:1px solid #223043; border-radius:14px;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width:160px">Month</th>
-                                    <th>Amount (EUR)</th>
-                                    <th class="right" style="width:120px">Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody id="prepayBody"></tbody>
-                        </table>
-                    </div>
-
-                    <div class="note warn" id="validationOut" style="margin-top:10px;"></div>
-                </div>
-
-                <div>
-                    <h2>Results</h2>
-
-                    <div class="kpi">
-                        <div class="t">Loan amount</div>
-                        <div class="v" id="loanOut">—</div>
-                        <div class="s" id="loanSub">—</div>
-                    </div>
-
-                    <div style="height:10px"></div>
-
-                    <div class="kpi">
-                        <div class="t">Monthly payment (first 6 years)</div>
-                        <div class="v" id="p1Out">—</div>
-                        <div class="s" id="p1Sub">—</div>
-                    </div>
-
-                    <div style="height:10px"></div>
-
-                    <div class="kpi">
-                        <div class="t">Monthly payment (after 6 years) – baseline (no prepayments)</div>
-                        <div class="v" id="p2Out">—</div>
-                        <div class="s" id="p2Sub">—</div>
-                    </div>
-
-                    <h2>Impact of premature payments</h2>
-                    <div class="note">
-                        “After 6 years” column = payment at month 73 assuming <b>prepayments up to that row only</b>
-                        (cumulative), and no later prepayments.
-                    </div>
-
-                    <div style="margin-top:10px; overflow:auto; border:1px solid #223043; border-radius:14px;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Month</th>
-                                    <th class="right">Extra payment</th>
-                                    <th class="right">Balance before</th>
-                                    <th class="right">Balance after</th>
-                                    <th class="right">New monthly payment</th>
-                                    <th class="right">Payment after 6 years</th>
-                                    <th>Phase</th>
-                                </tr>
-                            </thead>
-                            <tbody id="impactBody"></tbody>
-                        </table>
-                    </div>
-
-                    <div class="note small" style="margin-top:10px;">
-                        If you want the other mode “keep payment, shorten term”, tell me.
-                    </div>
-                </div>
-            </div>
+    <div class="grid">
+      <div>
+        <h2>Inputs</h2>
+        <div class="row">
+          <div>
+            <label>Property price (EUR)</label>
+            <div class="note">Example: 80000</div>
+          </div>
+          <input id="price" type="number" step="0.01" value="100000">
         </div>
+        <div class="row">
+          <div>
+            <label>Deposit (EUR)</label>
+            <div class="note">Example: 800</div>
+          </div>
+          <input id="deposit" type="number" step="0.01" value="1000">
+        </div>
+        <div class="row">
+          <div>
+            <label>Years</label>
+            <div class="note">Example: 40</div>
+          </div>
+          <input id="years" type="number" step="1" value="40">
+        </div>
+
+        <h2>Premature payments</h2>
+
+        <div class="btnRow">
+          <button id="addRowBtn">+ Add premature payment</button>
+          <button id="clearBtn">Clear list</button>
+          <button id="calcBtn">Calculate</button>
+        </div>
+
+        <div style="margin-top:10px; overflow:auto; border:1px solid #223043; border-radius:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:160px">Month</th>
+                <th>Amount (EUR)</th>
+                <th class="right" style="width:120px">Remove</th>
+              </tr>
+            </thead>
+            <tbody id="prepayBody"></tbody>
+          </table>
+        </div>
+
+        <div class="note warn" id="validationOut" style="margin-top:10px;"></div>
+      </div>
+
+      <div>
+        <h2>Baseline results (no prepayments)</h2>
+
+        <div class="kpi">
+          <div class="t">Loan amount</div>
+          <div class="v" id="loanOut">—</div>
+          <div class="s" id="loanSub">—</div>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="kpi">
+          <div class="t">Monthly payment (first 6 years)</div>
+          <div class="v" id="p1Out">—</div>
+          <div class="s" id="p1Sub">—</div>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="kpi">
+          <div class="t">Monthly payment (after 6 years)</div>
+          <div class="v" id="p2Out">—</div>
+          <div class="s" id="p2Sub">—</div>
+        </div>
+
+        <h2>Impact table (cumulative per row)</h2>
+
+        <div style="margin-top:10px; overflow:auto; border:1px solid #223043; border-radius:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Month</th>
+                <th class="right">Extra payment</th>
+                <th class="right">Balance before</th>
+                <th class="right">Balance after</th>
+                <th class="right">New payment after this row</th>
+                <th class="right">Payment after 6 years</th>
+              </tr>
+            </thead>
+            <tbody id="impactBody"></tbody>
+          </table>
+        </div>
+
+      </div>
     </div>
+  </div>
+</div>
 
-    <script>
-        (() => {
-            // ---- Defaults ----
-            const FIXED_ANNUAL_RATE = 0.015;   // 1.50% for first 6 years
-            const VAR_ANNUAL_RATE = 0.0394;  // example after 6 years
-            const FIXED_MONTHS = 72;      // 6 years
+<script>
+(() => {
+  // Defaults
+  const FIXED_ANNUAL_RATE = 0.015;   // 1.50%
+  const VAR_ANNUAL_RATE   = 0.0394;  // example
+  const FIXED_MONTHS      = 72;      // 6 years
 
-            const $ = (id) => document.getElementById(id);
+  const $ = (id) => document.getElementById(id);
 
-            // Premature payments list
-            let prepayments = [];
+  let prepayments = [];
 
-            function fmtEur(x) {
-                if (!isFinite(x)) return "—";
-                return x.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " EUR";
-            }
+  function fmtEur(x){
+    if(!isFinite(x)) return "—";
+    return x.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2}) + " EUR";
+  }
 
-            function powInt(a, n) { let r = 1; for (let i = 0; i < n; i++) r *= a; return r; }
+  function powInt(a,n){ let r=1; for(let i=0;i<n;i++) r*=a; return r; }
 
-            function annuityPayment(principal, annualRate, months) {
-                if (months <= 0) return 0;
-                const r = annualRate / 12;
-                if (Math.abs(r) < 1e-15) return principal / months;
-                const p = powInt(1 + r, months);
-                return principal * (r * p) / (p - 1);
-            }
+  function annuityPayment(principal, annualRate, months){
+    if(months <= 0) return 0;
+    const r = annualRate / 12;
+    if(Math.abs(r) < 1e-15) return principal / months;
+    const p = powInt(1 + r, months);
+    return principal * (r * p) / (p - 1);
+  }
 
-            function renderPrepayTable() {
-                const body = $("prepayBody");
-                body.innerHTML = "";
-
-                if (prepayments.length === 0) {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `<td colspan="3" class="small">No premature payments added.</td>`;
-                    body.appendChild(tr);
-                    return;
-                }
-
-                prepayments.forEach((pp, idx) => {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
+  function renderPrepayTable(){
+    const body = $("prepayBody");
+    body.innerHTML = "";
+    if(prepayments.length === 0){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="3" class="small">No premature payments added.</td>`;
+      body.appendChild(tr);
+      return;
+    }
+    prepayments.forEach((pp, idx) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
         <td><input data-idx="${idx}" data-field="month" type="number" step="1" min="1" value="${pp.month ?? ""}"></td>
         <td><input data-idx="${idx}" data-field="amount" type="number" step="0.01" min="0" value="${pp.amount ?? ""}"></td>
         <td class="right"><button data-remove="${idx}">Remove</button></td>
       `;
-                    body.appendChild(tr);
-                });
+      body.appendChild(tr);
+    });
 
-                body.querySelectorAll("input").forEach(inp => {
-                    inp.addEventListener("input", (e) => {
-                        const idx = +e.target.dataset.idx;
-                        const field = e.target.dataset.field;
-                        const val = +e.target.value;
-                        if (field === "month") prepayments[idx].month = Math.max(1, Math.floor(val || 0));
-                        if (field === "amount") prepayments[idx].amount = Math.max(0, val || 0);
-                    });
-                });
+    body.querySelectorAll("input").forEach(inp => {
+      inp.addEventListener("input", (e) => {
+        const idx = +e.target.dataset.idx;
+        const field = e.target.dataset.field;
+        const val = +e.target.value;
+        if(field === "month") prepayments[idx].month = Math.max(1, Math.floor(val || 0));
+        if(field === "amount") prepayments[idx].amount = Math.max(0, val || 0);
+      });
+    });
 
-                body.querySelectorAll("button[data-remove]").forEach(btn => {
-                    btn.addEventListener("click", (e) => {
-                        const idx = +e.target.dataset.remove;
-                        prepayments.splice(idx, 1);
-                        renderPrepayTable();
-                    });
-                });
-            }
+    body.querySelectorAll("button[data-remove]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const idx = +e.target.dataset.remove;
+        prepayments.splice(idx, 1);
+        renderPrepayTable();
+      });
+    });
+  }
 
-            function sortAndValidatePrepayments(termMonths) {
-                const validation = [];
+  function cleanedSortedPrepayments(termMonths){
+    const validation = [];
+    const cleaned = prepayments
+      .map(x => ({ month: Math.floor(+x.month || 0), amount: +x.amount || 0 }))
+      .filter(x => x.month >= 1 && x.amount > 0);
 
-                const cleaned = prepayments
-                    .map(x => ({ month: Math.floor(+x.month || 0), amount: +x.amount || 0 }))
-                    .filter(x => x.month >= 1 && x.amount > 0);
+    for(const p of cleaned){
+      if(p.month > termMonths){
+        validation.push(`Payment month ${p.month} is beyond term (${termMonths}) and will be ignored.`);
+      }
+    }
+    const within = cleaned.filter(p => p.month <= termMonths);
+    within.sort((a,b) => a.month - b.month);
+    return { within, validation };
+  }
 
-                for (const p of cleaned) {
-                    if (p.month > termMonths) {
-                        validation.push(`Premature payment month ${p.month} is beyond the loan term (${termMonths}). It will be ignored.`);
-                    }
-                }
+  // Run a full simulation but only applying the first K prepayments (cumulative).
+  // Returns: impact row data for the Kth payment:
+  // - newPayment after that Kth payment
+  // - paymentAfter6Years computed from balance at month 72
+  function simulateUpToK({loan, termMonths, prepayList, k}){
+    const fixedMonths = Math.min(FIXED_MONTHS, termMonths);
 
-                const within = cleaned.filter(p => p.month <= termMonths);
+    // schedule map for first k prepayments (if multiple in same month within first k, sum them)
+    const map = new Map();
+    for(let i=0;i<k;i++){
+      const p = prepayList[i];
+      map.set(p.month, (map.get(p.month) || 0) + p.amount);
+    }
 
-                // combine same month
-                const map = new Map();
-                for (const p of within) map.set(p.month, (map.get(p.month) || 0) + p.amount);
+    let bal = loan;
 
-                const combined = Array.from(map.entries()).map(([month, amount]) => ({ month, amount }));
-                combined.sort((a, b) => a.month - b.month);
+    // start payment in fixed phase amortized over full term
+    let payment = annuityPayment(bal, FIXED_ANNUAL_RATE, termMonths);
 
-                return { combined, validation };
-            }
+    // track payment after 6 years (month 73) for this K scenario
+    let paymentAfter6 = null;
 
-            // Given a state right AFTER a prepayment at month m, estimate the payment at month 73 (after 6 years),
-            // assuming no further prepayments later.
-            function paymentAfterSixYearsFromState({
-                balanceAfterPrepay,
-                currentPaymentAfterPrepay,
-                monthNow,
-                termMonths
-            }) {
-                const fixedMonths = Math.min(FIXED_MONTHS, termMonths);
-                const remAfterSix = termMonths - fixedMonths;
+    // track details for the specific Kth payment
+    const targetMonth = prepayList[k-1].month;
+    let rowBefore = null, rowAfter = null, rowNewPayment = null;
 
-                if (remAfterSix <= 0) return 0; // no variable phase
-                if (monthNow >= fixedMonths) {
-                    // Already at/after month 72: payment after 6 years is already determined by the time you reach month 73.
-                    // (We’ll compute it from the balance at end of month 72 in simulation below anyway.)
-                }
+    for(let m=1; m<=termMonths; m++){
+      const inFixed = (m <= fixedMonths);
+      const ar = inFixed ? FIXED_ANNUAL_RATE : VAR_ANNUAL_RATE;
 
-                // Simulate forward WITHOUT further prepayments until end of month 72, using the payment that was recalculated after the prepayment.
-                let bal = balanceAfterPrepay;
-                let pay = currentPaymentAfterPrepay;
+      // switch to variable at month 73
+      if(m === fixedMonths + 1){
+        const remaining = termMonths - (m - 1);
+        payment = remaining > 0 ? annuityPayment(bal, VAR_ANNUAL_RATE, remaining) : 0;
+        paymentAfter6 = payment;
+      }
 
-                // Next month is monthNow+1
-                for (let m = monthNow + 1; m <= fixedMonths; m++) {
-                    if (bal <= 0) break;
-                    const r = FIXED_ANNUAL_RATE / 12;
-                    const interest = bal * r;
-                    let principal = pay - interest;
-                    if (principal < 0) principal = 0;
-                    if (principal > bal) principal = bal;
-                    bal -= principal;
-                    // (No recalculation unless another prepayment happens — we assume none later for this per-row estimate.)
-                }
+      // regular installment
+      const r = ar / 12;
+      const interest = bal * r;
+      let principal = payment - interest;
+      if(principal < 0) principal = 0;
+      if(principal > bal) principal = bal;
+      bal -= principal;
 
-                // At month 73, bank recalculates using remaining balance and remaining months at VAR rate:
-                return annuityPayment(bal, VAR_ANNUAL_RATE, remAfterSix);
-            }
+      // prepayment after installment (only first k prepayments are scheduled in map)
+      const extra = map.get(m) || 0;
+      if(extra > 0 && bal > 0){
+        const beforeExtra = bal;
+        const applied = Math.min(extra, bal);
+        bal -= applied;
 
-            function calculate() {
-                $("validationOut").textContent = "";
-                $("impactBody").innerHTML = "";
+        const remainingMonths = termMonths - m;
+        const newPayment = remainingMonths > 0 ? annuityPayment(bal, ar, remainingMonths) : 0;
 
-                const price = +$("price").value || 0;
-                const deposit = +$("deposit").value || 0;
-                const years = Math.max(1, Math.floor(+$("years").value || 0));
-                const termMonths = years * 12;
+        // If this month is where the Kth prepayment happens, capture row details
+        if(m === targetMonth){
+          rowBefore = beforeExtra;
+          rowAfter = bal;
+          rowNewPayment = newPayment;
+        }
 
-                const dep = Math.min(Math.max(deposit, 0), Math.max(price, 0));
-                const loan = Math.max(0, price - dep);
+        payment = newPayment;
+      }
 
-                $("loanOut").textContent = fmtEur(loan);
-                $("loanSub").textContent = `Term: ${years} years (${termMonths} months)`;
+      if(bal <= 0) break;
+    }
 
-                if (loan <= 0) {
-                    $("p1Out").textContent = "—";
-                    $("p2Out").textContent = "—";
-                    $("p1Sub").textContent = "Loan amount is 0.";
-                    $("p2Sub").textContent = "";
-                    return;
-                }
+    // If loan ends before month 73, paymentAfter6 is effectively 0
+    if(termMonths > fixedMonths && paymentAfter6 === null){
+      // Not reached month 73 because loan finished early
+      paymentAfter6 = 0;
+    }
 
-                const fixedMonths = Math.min(FIXED_MONTHS, termMonths);
+    return { rowBefore, rowAfter, rowNewPayment, paymentAfter6 };
+  }
 
-                // Baseline (no prepayments)
-                const baseP1 = annuityPayment(loan, FIXED_ANNUAL_RATE, termMonths);
+  function calculate(){
+    $("validationOut").textContent = "";
+    $("impactBody").innerHTML = "";
 
-                // balance after fixed period with baseline
-                let baselineBalAfterFixed = loan;
-                for (let m = 1; m <= fixedMonths; m++) {
-                    const r = FIXED_ANNUAL_RATE / 12;
-                    const interest = baselineBalAfterFixed * r;
-                    let principal = baseP1 - interest;
-                    if (principal > baselineBalAfterFixed) principal = baselineBalAfterFixed;
-                    baselineBalAfterFixed -= principal;
-                }
+    const price = +$("price").value || 0;
+    const deposit = +$("deposit").value || 0;
+    const years = Math.max(1, Math.floor(+$("years").value || 0));
+    const termMonths = years * 12;
 
-                const baselineRem = termMonths - fixedMonths;
-                const baseP2Shown = baselineRem > 0 ? annuityPayment(baselineBalAfterFixed, VAR_ANNUAL_RATE, baselineRem) : 0;
+    const dep = Math.min(Math.max(deposit, 0), Math.max(price, 0));
+    const loan = Math.max(0, price - dep);
 
-                $("p1Out").textContent = fmtEur(baseP1);
-                $("p1Sub").textContent = `Rate: ${(FIXED_ANNUAL_RATE * 100).toFixed(2)}% · Duration: ${fixedMonths} months`;
+    $("loanOut").textContent = fmtEur(loan);
+    $("loanSub").textContent = `Term: ${years} years (${termMonths} months)`;
 
-                $("p2Out").textContent = baselineRem > 0 ? fmtEur(baseP2Shown) : "—";
-                $("p2Sub").textContent = baselineRem > 0
-                    ? `Rate: ${(VAR_ANNUAL_RATE * 100).toFixed(2)}% · Remaining: ${baselineRem} months`
-                    : "No remaining term after 6 years.";
+    if(loan <= 0){
+      $("p1Out").textContent = "—";
+      $("p2Out").textContent = "—";
+      $("p1Sub").textContent = "Loan amount is 0.";
+      $("p2Sub").textContent = "";
+      return;
+    }
 
-                // Prepayments preparation
-                const { combined, validation } = sortAndValidatePrepayments(termMonths);
-                if (validation.length) {
-                    $("validationOut").innerHTML = validation.map(x => "• " + x).join("<br>");
-                }
+    const fixedMonths = Math.min(FIXED_MONTHS, termMonths);
 
-                const prepayByMonth = new Map(combined.map(p => [p.month, p.amount]));
+    // Baseline
+    const baseP1 = annuityPayment(loan, FIXED_ANNUAL_RATE, termMonths);
 
-                // Simulation with cumulative prepayments
-                let bal = loan;
+    let balAfterFixed = loan;
+    for(let m=1; m<=fixedMonths; m++){
+      const r = FIXED_ANNUAL_RATE / 12;
+      const interest = balAfterFixed * r;
+      let principal = baseP1 - interest;
+      if(principal > balAfterFixed) principal = balAfterFixed;
+      balAfterFixed -= principal;
+    }
+    const baselineRem = termMonths - fixedMonths;
+    const baseP2 = baselineRem > 0 ? annuityPayment(balAfterFixed, VAR_ANNUAL_RATE, baselineRem) : 0;
 
-                // payment starts in fixed phase amortized over full term
-                let currentPayment = annuityPayment(bal, FIXED_ANNUAL_RATE, termMonths);
+    $("p1Out").textContent = fmtEur(baseP1);
+    $("p1Sub").textContent = `Rate: ${(FIXED_ANNUAL_RATE*100).toFixed(2)}% · First ${fixedMonths} months`;
 
-                // Track the actual payment that will apply after 6 years (month 73) in the cumulative simulation
-                let paymentAfter6YearsActual = null;
+    $("p2Out").textContent = baselineRem > 0 ? fmtEur(baseP2) : "—";
+    $("p2Sub").textContent = baselineRem > 0
+      ? `Rate: ${(VAR_ANNUAL_RATE*100).toFixed(2)}% · Remaining ${baselineRem} months`
+      : "No variable phase.";
 
-                const impactRows = [];
+    // Prepayments list
+    const { within, validation } = cleanedSortedPrepayments(termMonths);
+    if(validation.length){
+      $("validationOut").innerHTML = validation.map(x => "• " + x).join("<br>");
+    }
 
-                for (let m = 1; m <= termMonths; m++) {
-                    const inFixed = (m <= fixedMonths);
-                    const phase = inFixed ? "Fixed" : "Variable";
-                    const ar = inFixed ? FIXED_ANNUAL_RATE : VAR_ANNUAL_RATE;
-                    const r = ar / 12;
+    const impactBody = $("impactBody");
+    impactBody.innerHTML = "";
 
-                    // Switch to variable at month 73 (fixedMonths+1)
-                    if (m === fixedMonths + 1) {
-                        const remaining = termMonths - (m - 1);
-                        currentPayment = remaining > 0 ? annuityPayment(bal, VAR_ANNUAL_RATE, remaining) : 0;
-                        paymentAfter6YearsActual = currentPayment; // this is the cumulative “real” payment after 6 years
-                    }
+    if(within.length === 0){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="7" class="small">Add premature payments to see per-row recalculated results.</td>`;
+      impactBody.appendChild(tr);
+      return;
+    }
 
-                    // regular installment
-                    const interest = bal * r;
-                    let principal = currentPayment - interest;
-                    if (principal < 0) principal = 0;
-                    if (principal > bal) principal = bal;
-                    bal -= principal;
+    // For each row i, simulate applying first i payments (cumulative) and show results for that row
+    within.forEach((p, i) => {
+      const k = i + 1;
+      const sim = simulateUpToK({ loan, termMonths, prepayList: within, k });
 
-                    // prepayment after installment
-                    const extra = prepayByMonth.get(m) || 0;
-                    if (extra > 0 && bal > 0) {
-                        const beforeExtra = bal;
-                        const applied = Math.min(extra, bal);
-                        bal -= applied;
-
-                        // recalc payment for remaining months at current phase rate
-                        const remainingMonths = termMonths - m;
-                        const newPayment = remainingMonths > 0 ? annuityPayment(bal, ar, remainingMonths) : 0;
-
-                        // per-row estimate: what would payment be after 6 years given cumulative prepayments up to THIS row (and no more later)?
-                        let after6PaymentForThisRow;
-                        if (termMonths <= fixedMonths) {
-                            after6PaymentForThisRow = 0;
-                        } else if (m >= fixedMonths) {
-                            // already at/after fixed period; the “after 6 years” payment is the one computed at the switch (if reached),
-                            // otherwise compute it based on current state (rare corner when fixedMonths==0).
-                            after6PaymentForThisRow = paymentAfter6YearsActual ?? annuityPayment(bal, VAR_ANNUAL_RATE, termMonths - fixedMonths);
-                        } else {
-                            after6PaymentForThisRow = paymentAfterSixYearsFromState({
-                                balanceAfterPrepay: bal,
-                                currentPaymentAfterPrepay: newPayment,
-                                monthNow: m,
-                                termMonths
-                            });
-                        }
-
-                        impactRows.push({
-                            month: m,
-                            extra: applied,
-                            before: beforeExtra,
-                            after: bal,
-                            newPayment,
-                            after6Payment: after6PaymentForThisRow,
-                            phase
-                        });
-
-                        // apply for next month
-                        currentPayment = newPayment;
-                    }
-
-                    if (bal <= 0) break;
-                }
-
-                // Render
-                const impactBody = $("impactBody");
-                impactBody.innerHTML = "";
-
-                if (impactRows.length === 0) {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `<td colspan="7" class="small">No premature payments applied (add rows above).</td>`;
-                    impactBody.appendChild(tr);
-                    return;
-                }
-
-                for (const row of impactRows) {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-        <td>${row.month}</td>
-        <td class="right">${fmtEur(row.extra)}</td>
-        <td class="right">${fmtEur(row.before)}</td>
-        <td class="right">${fmtEur(row.after)}</td>
-        <td class="right"><b>${fmtEur(row.newPayment)}</b></td>
-        <td class="right"><b>${fmtEur(row.after6Payment)}</b></td>
-        <td>${row.phase}</td>
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${k}</td>
+        <td>${p.month}</td>
+        <td class="right">${fmtEur(p.amount)}</td>
+        <td class="right">${fmtEur(sim.rowBefore)}</td>
+        <td class="right">${fmtEur(sim.rowAfter)}</td>
+        <td class="right"><b>${fmtEur(sim.rowNewPayment)}</b></td>
+        <td class="right"><b>${fmtEur(sim.paymentAfter6)}</b></td>
       `;
-                    impactBody.appendChild(tr);
-                }
-            }
+      impactBody.appendChild(tr);
+    });
+  }
 
-            // UI events
-            $("addRowBtn").addEventListener("click", () => {
-                prepayments.push({ month: 12, amount: 1000 });
-                renderPrepayTable();
-            });
+  // UI events
+  $("addRowBtn").addEventListener("click", () => {
+    prepayments.push({ month: 12, amount: 1000 });
+    renderPrepayTable();
+  });
 
-            $("clearBtn").addEventListener("click", () => {
-                prepayments = [];
-                renderPrepayTable();
-                calculate();
-            });
+  $("clearBtn").addEventListener("click", () => {
+    prepayments = [];
+    renderPrepayTable();
+    calculate();
+  });
 
-            $("calcBtn").addEventListener("click", calculate);
-            ["price", "deposit", "years"].forEach(id => $(id).addEventListener("input", calculate));
+  $("calcBtn").addEventListener("click", calculate);
+  ["price","deposit","years"].forEach(id => $(id).addEventListener("input", calculate));
 
-            // init
-            renderPrepayTable();
-            calculate();
-        })();
-    </script>
+  // init
+  renderPrepayTable();
+  calculate();
+})();
+</script>
 </body>
-
 </html>
